@@ -12,9 +12,12 @@
   },
   "sideEffects": false,
   "author": "lzear",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
   "repository": {
     "type": "git",
-    "url": "https://github.com/lzear/votes.git"
+    "url": "https://github.com/MonochromaticCoder/votes.git"
   },
   "license": "MIT",
   "scripts": {
@@ -30,7 +33,7 @@
     "commit": "git-cz",
     "precommit": "lint-staged",
     "changeset:version": "yarn changeset version",
-    "release": "yarn workspace votes release && changeset publish"
+    "release": "yarn workspace @MonochromaticCoder/votes release && changeset publish"
   },
   "devDependencies": {
     "@babel/core": "^7.23.9",
@@ -68,9 +71,9 @@
     "typescript": "5.3.3"
   },
   "bugs": {
-    "url": "https://github.com/lzear/votes/issues"
+    "url": "https://github.com/MonochromaticCoder/votes/issues"
   },
-  "homepage": "https://github.com/lzear/votes",
+  "homepage": "https://github.com/MonochromaticCoder/votes",
   "lint-staged": {
     "{src,test}/**/*.ts": [
       "prettier --write"

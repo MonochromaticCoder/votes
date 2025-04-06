@@ -1,5 +1,5 @@
 {
-  "name": "votes",
+  "name": "@MonochromaticCoder/votes",
   "type": "module",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -9,7 +9,7 @@
       "import": "./dist/index.js"
     }
   },
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "Implementation of some [electoral systems](https://en.wikipedia.org/wiki/Electoral_system)",
   "keywords": [
     "votes",
@@ -24,9 +24,12 @@
     "src"
   ],
   "author": "lzear",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
   "repository": {
     "type": "git",
-    "url": "https://github.com/lzear/votes.git"
+    "url": "https://github.com/MonochromaticCoder/votes.git"
   },
   "license": "MIT",
   "scripts": {
@@ -73,9 +76,9 @@
     "node": "^12.20.0 || ^14.13.1 || >=16.0.0"
   },
   "bugs": {
-    "url": "https://github.com/lzear/votes/issues"
+    "url": "https://github.com/MonochromaticCoder/votes/issues"
   },
-  "homepage": "https://github.com/lzear/votes",
+  "homepage": "https://github.com/MonochromaticCoder/votes",
   "directories": {
     "doc": "docs",
     "test": "test"
