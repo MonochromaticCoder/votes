@@ -25,23 +25,38 @@ const makeJudgement = (candidates: string[], ballots: Ballot[]): Judgements => {
 
 export const getMedian = (arr: number[]): number => {
   const sumWeights = _.sum(arr)
+  if (sumWeights === 0) return -1
 
-  let s = 0
-  let i = 0
+  const midpoint = Math.ceil(sumWeights / 2)
+  const isEven = sumWeights % 2 === 0
+  let cumulativeSum = 0
   let prevI = 0
-  let med = 0
-  for (const j of arr) {
-    s += j
-    i++
-    if (s === sumWeights / 2 + 1) med = (prevI + i) / 2
-    else if (s > sumWeights / 2) med = i
-    else {
-      if (j > 0) prevI = i
-      continue
+
+  for (const [i, count] of [...arr.entries()].filter(
+    ([, count]) => count > 0,
+  )) {
+    const prevSum = cumulativeSum
+    cumulativeSum += count
+
+    if (isEven) {
+      // Even - find middle 2 elements
+      const leftMid = midpoint
+      const rightMid = midpoint + 1
+      if (cumulativeSum >= rightMid) {
+        return prevSum < leftMid ? i : (prevI + i) / 2
+      }
+    } else {
+      // Odd - find exact middle point
+      if (cumulativeSum >= midpoint) {
+        return i
+      }
     }
-    break
+
+    prevI = i
   }
-  return med - 1
+
+  // If we get here, all weights are at the end, return the last index
+  return arr.length - 1
 }
 
 const getMedians = (judgements: Judgements) => {
