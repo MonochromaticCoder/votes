@@ -12,9 +12,9 @@ export interface Scorer extends Ranker {
  * Voting method for which the ballots are not necessary: the matrix of duels in enough.
  */
 export abstract class ScoreMethod extends Method implements Scorer {
-  public abstract scores(): ScoreObject
+  public abstract scores(progressCb?: (progress: number) => void): ScoreObject
 
-  public ranking(): string[][] {
-    return scoresToRanking(this.scores())
+  public ranking(progressCb?: (progress: number) => void): string[][] {
+    return scoresToRanking(this.scores(progressCb))
   }
 }
