@@ -49,10 +49,26 @@ const nextPermutation = (arr: number[]) => {
   return array
 }
 
-const computeScores = (matrix: Matrix): ScoreObject => {
+const factorial = (n: number) => {
+  let i = BigInt(n)
+  let ret = BigInt(1)
+  while (i > 1) {
+    ret *= i
+    i -= BigInt(1)
+  }
+  return ret
+}
+
+const computeScores = (
+  matrix: Matrix,
+  progressCb?: (progress: number) => void,
+): ScoreObject => {
+  const numPermutations = factorial(matrix.candidates.length)
+  const progressChunk = numPermutations / BigInt(1000)
   let bestPermutations: number[][] = []
   let bestScore = Infinity
   let p: number[] | false = range(matrix.candidates.length)
+  let i = BigInt(0)
   while (p) {
     const s = rankingPenalty(p, matrix.array)
     if (s === bestScore) bestPermutations.push(p)
@@ -61,6 +77,13 @@ const computeScores = (matrix: Matrix): ScoreObject => {
       bestPermutations = [p]
     }
     p = nextPermutation(p)
+    i += BigInt(1)
+    if (i % progressChunk === BigInt(0)) {
+      progressCb?.call(
+        this,
+        Number((i * BigInt(10_000)) / numPermutations) / 100,
+      )
+    }
   }
   const sumIdx = matrix.candidates.map((c, cIdx) =>
     bestPermutations
@@ -74,7 +97,7 @@ const computeScores = (matrix: Matrix): ScoreObject => {
  * #### Wikipedia: [Kemeny–Young method](https://en.wikipedia.org/wiki/Kemeny%E2%80%93Young_method)
  */
 export class Kemeny extends MatrixScoreMethod {
-  public scores(): ScoreObject {
-    return computeScores(this.matrix)
+  public scores(progressCb?: (progress: number) => void): ScoreObject {
+    return computeScores(this.matrix, progressCb)
   }
 }

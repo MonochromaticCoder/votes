@@ -19,7 +19,7 @@ export abstract class Method implements Ranker {
    * For example this ranking means that `Bear` wins, `Sheep` is second and `Lion` third
    * `[ [ 'Bear' ], [ 'Sheep' ], [ 'Lion' ] ]`
    */
-  public abstract ranking(): string[][]
+  public abstract ranking(progressCb?: (progress: number) => void): string[][]
 
   /**
    * Split tied candidates in a ranking.
