@@ -22,6 +22,7 @@ export class Tarjan {
     return this.scc
   }
   private strongconnect(vertex: Vertex): void {
+    console.trace()
     // Set the depth index for v to the smallest unused index
     vertex.index = this.index
     vertex.lowlink = this.index
