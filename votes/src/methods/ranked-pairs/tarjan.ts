@@ -18,45 +18,70 @@ export class Tarjan {
   }
   public run(): Vertex[][] {
     for (const i in this.graph)
-      if (this.graph[i].index < 0) this.strongconnect(this.graph[i])
+      if (this.graph[i].index < 0) this.strongconnectIterative(this.graph[i])
     return this.scc
   }
-  private strongconnect(vertex: Vertex): void {
-    // Set the depth index for v to the smallest unused index
-    vertex.index = this.index
-    vertex.lowlink = this.index
-    this.index = this.index + 1
-    this.stack.vertices.push(vertex)
+  private strongconnectIterative(startVertex: Vertex): void {
+    const dfsStack: Array<{ vertex: Vertex; nextNeighborIdx: number }> = []
 
-    // Consider successors of v
-    // aka... consider each vertex in vertex.connections
-    for (const connection of vertex.connections) {
-      const v = vertex
-      const w = connection
-      if (w.index < 0) {
-        // Successor w has not yet been visited; recurse on it
-        this.strongconnect(w)
-        v.lowlink = Math.min(v.lowlink, w.lowlink)
-      } else if (this.stack.contains(w)) {
-        // Successor w is in stack S and hence in the current SCC
-        v.lowlink = Math.min(v.lowlink, w.index)
+    // Initialize start vertex
+    startVertex.index = this.index
+    startVertex.lowlink = this.index
+    this.index++
+    this.stack.vertices.push(startVertex)
+    startVertex.onStack = true
+
+    dfsStack.push({ vertex: startVertex, nextNeighborIdx: 0 })
+
+    while (dfsStack.length > 0) {
+      const frame = dfsStack.at(-1)!
+      const v = frame.vertex
+
+      if (frame.nextNeighborIdx < v.connections.length) {
+        // Process next neighbor
+        const w = v.connections[frame.nextNeighborIdx]
+        frame.nextNeighborIdx++
+
+        if (w.index < 0) {
+          // w is unvisited - "recurse" on it
+          w.index = this.index
+          w.lowlink = this.index
+          this.index++
+          this.stack.vertices.push(w)
+          w.onStack = true
+
+          dfsStack.push({ vertex: w, nextNeighborIdx: 0 })
+        } else if (w.onStack) {
+          // w is in current SCC - update lowlink
+          v.lowlink = Math.min(v.lowlink, w.index)
+        }
+      } else {
+        // All neighbors processed - "return" from this vertex
+        dfsStack.pop()
+
+        // If v is a root node, pop the stack and generate an SCC
+        if (v.lowlink === v.index) {
+          const scc: Vertex[] = []
+          let w: Vertex | undefined
+          do {
+            w = this.stack.vertices.pop()
+            if (w) {
+              w.onStack = false
+              scc.push(w)
+            }
+          } while (w && w !== v)
+
+          if (scc.length > 0) {
+            this.scc.push(scc)
+          }
+        }
+
+        // Update parent's lowlink with our final lowlink
+        if (dfsStack.length > 0) {
+          const parent = dfsStack.at(-1)!.vertex
+          parent.lowlink = Math.min(parent.lowlink, v.lowlink)
+        }
       }
-    }
-
-    // If v is a root node, pop the stack and generate an SCC
-    if (vertex.lowlink === vertex.index) {
-      // start a new strongly connected component
-      const vertices: Vertex[] = []
-      let w = null
-      if (this.stack.vertices.length > 0)
-        do {
-          w = this.stack.vertices.pop()
-          // add w to current strongly connected component
-          if (w) vertices.push(w)
-        } while (w && !vertex.equals(w))
-      // output the current strongly connected component
-      // ... i'm going to push the results to a member scc array variable
-      if (vertices.length > 0) this.scc.push(vertices)
     }
   }
 }

@@ -4,6 +4,7 @@
 export class Vertex {
   public index: number
   public lowlink: number
+  public onStack: boolean = false
   public connections: Vertex[]
   private readonly name: number | string
   constructor(name: number | string) {
