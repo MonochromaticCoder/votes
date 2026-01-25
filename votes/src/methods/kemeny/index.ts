@@ -78,7 +78,10 @@ const computeScores = (
     }
     p = nextPermutation(p)
     i += BigInt(1)
-    if (progressChunk !== BigInt(0) && i % progressChunk === BigInt(0)) {
+    if (
+      progressChunk !== BigInt(0) &&
+      (i % progressChunk === BigInt(0) || !p)
+    ) {
       progressCb?.call(
         this,
         Number((i * BigInt(10_000)) / numPermutations) / 100,
