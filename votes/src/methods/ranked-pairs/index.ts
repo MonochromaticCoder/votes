@@ -1,4 +1,4 @@
-import { groupBy, range, zipObject } from 'lodash-es'
+import { range, zipObject } from 'lodash-es'
 
 import { MatrixScoreMethod } from '../../classes/matrix-score-method'
 import type { Matrix, ScoreObject } from '../../types'
@@ -16,10 +16,7 @@ const computeFromMatrix = (matrix: Matrix): ScoreObject => {
         )
         .filter(Boolean) as Edge[],
   )
-  const edgesGroups = groupBy(allEdges, 'value')
-  const groups = Object.keys(edgesGroups)
-    .sort((a, b) => Number(b) - Number(a))
-    .map((value) => edgesGroups[value])
+  const groups = allEdges.sort((a, b) => b.value - a.value).map((x) => [x])
 
   const acyclicGraph = groups.reduce(
     (graph: Edge[], edgesToAdd) => generateAcyclicGraph(graph, edgesToAdd),
